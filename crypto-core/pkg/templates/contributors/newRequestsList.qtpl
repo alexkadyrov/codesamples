@@ -1,0 +1,56 @@
+// Requests list page template. Implements BasePage methods.
+
+{% import (
+    contributor "github.com/bfg-dev/crypto-core/pkg/services/contributor"
+    timeformat "github.com/bfg-dev/crypto-core/pkg/helpers/timeformat"
+    )
+%}
+
+{% code
+type NewRequestsListPage struct {
+    Requests []contributor.UserMissionRequest
+}
+%}
+
+{% func (p *NewRequestsListPage) Title() %}
+	This is table page
+{% endfunc %}
+
+{% func (p *NewRequestsListPage) Body() %}
+
+    <h2>Список новых запросов на миссии</h2>
+
+	<table>
+	    <thead>
+	        <tr>
+	            <th>Дата</th>
+	            <th>Пользователь</th>
+	            <th>Миссия</th>
+	            <th>Параметры запроса</th>
+	            <th>&nbsp;</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	{% for _, request := range p.Requests %}
+	    <form method="post" action="/admin/SetUserRequestStatus">
+	    <input type="hidden" name="id" value="{%d int(request.ID) %}">
+	    <tr>
+	        <td>{%s request.CreatedAt.Format(timeformat.Date) %}</td>
+            <td>{%s request.UserName %}</td>
+            <td>{%s request.Mission %}</td>
+            <td>
+            {% for key, param := range request.MissionParameters %}
+                {%s key %}: <a href="{%s param %}" target="_blank">link</a>
+                <br>
+            {% endfor %}
+            </td>
+            <td><button type="submit" name="status" value="approved">Одобрить</button>
+                <button type="submit" name="status" value="rejected">Отклонить</button>
+            </td>
+	    </tr>
+	    </form>
+	{% endfor %}
+	    </tbody>
+	</table>
+{% endfunc %}
+

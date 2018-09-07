@@ -1,0 +1,35 @@
+All text outside function templates is treated as comments,
+i.e. it is just ignored by quicktemplate compiler (`qtc`). It is for humans.
+
+Hello is a simple template function.
+
+{% import (
+    "github.com/bfg-dev/crypto-core/pkg/entities"
+    timeformat "github.com/bfg-dev/crypto-core/pkg/helpers/timeformat"
+    )
+%}
+
+{% code
+type NewRequestsListTemplate struct {
+    Requests []entities.CCUserMission
+}
+%}
+
+{% func RenderNewRequestsList(newRequestsList *NewRequestsListTemplate) %}
+    <html>
+    <body>
+	<h1>Hello!</h1>
+
+	<table>
+	{% for _, request := range newRequestsList.Requests %}
+	    <tr>
+	        <td>{%s request.CreatedAt.Format(timeformat.Date) %}</td>
+            <td>{%d int(request.UserId) %}</td>
+            <td>{%d int(request.MissionId) %}</td>
+	    </tr>
+	{% endfor %}
+	</table>
+	</body>
+	</html>
+{% endfunc %}
+
